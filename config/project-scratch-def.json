@@ -1,0 +1,10 @@
+{
+  "orgName": "rohan company",
+  "edition": "Developer",
+  "features": ["DebugApex"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    }
+  }
+}
