@@ -1,0 +1,38 @@
+# 1. Ignore everything by default
+*
+
+# 2. Allow directories to be traversed so Git can find the nested files
+!*/
+
+# 3. Always track the .gitignore file itself
+!.gitignore
+
+# ==========================================
+# 4. ALLOW SPECIFIC DIRECTORIES
+# ==========================================
+
+# Allow LWC
+!force-app/main/default/lwc/**
+
+# Allow Apex Classes
+!force-app/main/default/classes/**
+
+# Allow Apex Triggers
+!force-app/main/default/triggers/**
+
+# Allow the config directory (typically contains scratch org defs)
+!config/**
+
+# ==========================================
+# 5. ALLOW ESSENTIAL ROOT CONFIGURATION FILES
+# ==========================================
+!sfdx-project.json
+!project-scratch-def.json
+!.forceignore
+!package.json
+
+# ==========================================
+# 6. RE-IGNORE SPECIFIC ITEMS (Optional)
+# ==========================================
+# If you still want to ignore the LWC meta files like in your previous attempt, uncomment the line below:
+# force-app/main/default/lwc/**/*.js-meta.xml

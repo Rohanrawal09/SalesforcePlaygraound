@@ -1,0 +1,39 @@
+<template>
+    <!-- Parent Component Card -->
+    <lightning-card title="Parent Component : - ">
+        
+        <!-- Action Buttons Section -->
+        <div class="slds-m-bottom_medium">
+            <!-- Button to send data to child component -->
+            <lightning-button
+                label="Send Data To Child"
+                onclick={sendParentDataToChild}
+                class="slds-m-right_small">
+            </lightning-button>
+
+            <!-- Button to load lead data imperatively -->
+            <lightning-button
+                label="Send Lead Data Imperatively"
+                onclick={loadParentLeadData}>
+            </lightning-button>
+        </div>
+
+        <!-- Child Component Section -->
+        <!-- Passes parent data (accounts, leads, messages) to child component -->
+        <c-child-component 
+            message-from-parent-to-child={parentMessage}
+            child-username-from-parent={parentUserName}
+            child-account-info-from-parent={parentAccountInfo}
+            child-soql-account-detail-from-parent={parentQueryAccountDetails}
+            child-soql-lead-detail-imperatively-from-parent={parentImperativeLeadData}
+            onchildmessagechange={handleDataFromChildToParent}>
+        </c-child-component>
+    </lightning-card>
+
+    <!-- Display Data from Child Component -->
+    <lightning-card title="Child Data">
+        <div class="slds-p-around_medium">
+            {messageFromChildToParent}
+        </div>
+    </lightning-card>
+</template>
