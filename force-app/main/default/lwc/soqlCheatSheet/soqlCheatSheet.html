@@ -1,0 +1,158 @@
+<template>
+    <!-- Main Card Container holding the entire tool UI -->
+    <lightning-card title="SOQL Cheat Sheet &amp; Builders" icon-name="custom:custom102">
+        <div class="slds-p-horizontal_medium">
+            <lightning-tabset variant="scoped">
+                
+                <!-- ========================================== -->
+                <!-- TAB 1: SOQL CHEAT SHEET (Reference Guide)   -->
+                <!-- ========================================== -->
+                <lightning-tab label="Cheat Sheet" icon-name="utility:knowledge_base">
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        
+                        <!-- Basic Select Card -->
+                        <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                            <article class="slds-box slds-theme_default">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small"><strong>Basic SELECT</strong></h3>
+                                <p>Retrieves specific fields from an object.</p>
+                                <pre class="slds-box slds-theme_shade slds-m-top_x-small">SELECT Id, Name, Email FROM Contact</pre>
+                            </article>
+                        </div>
+                        
+                        <!-- WHERE Clause Card -->
+                        <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                            <article class="slds-box slds-theme_default">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small"><strong>WHERE Clause</strong></h3>
+                                <p>Filters records based on specific conditions.</p>
+                                <pre class="slds-box slds-theme_shade slds-m-top_x-small">SELECT Name FROM Account WHERE Industry = 'Technology'</pre>
+                            </article>
+                        </div>
+                        
+                        <!-- ORDER BY & LIMIT Card -->
+                        <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                            <article class="slds-box slds-theme_default">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small"><strong>ORDER BY &amp; LIMIT</strong></h3>
+                                <p>Sorts the results and restricts the number of rows returned.</p>
+                                <pre class="slds-box slds-theme_shade slds-m-top_x-small">SELECT Name, Amount FROM Opportunity ORDER BY Amount DESC LIMIT 10</pre>
+                            </article>
+                        </div>
+                        
+                        <!-- LIKE Operator Card -->
+                        <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                            <article class="slds-box slds-theme_default">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small"><strong>LIKE Operator</strong></h3>
+                                <p>Performs partial text matches (uses % as a wildcard).</p>
+                                <pre class="slds-box slds-theme_shade slds-m-top_x-small">SELECT Name FROM Lead WHERE Company LIKE 'Gene%'</pre>
+                            </article>
+                        </div>
+                        
+                        <!-- Aggregate Functions Card -->
+                        <div class="slds-col slds-size_1-of-2">
+                            <article class="slds-box slds-theme_default">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small"><strong>Aggregate Functions</strong></h3>
+                                <p>Performs calculations on data (COUNT, SUM, MIN, MAX, AVG).</p>
+                                <pre class="slds-box slds-theme_shade slds-m-top_x-small" style="white-space: pre-wrap; word-break: break-word;">SELECT StageName, COUNT(Id), SUM(Amount) FROM Opportunity GROUP BY StageName</pre>
+                            </article>
+                        </div>
+                    </div>
+                </lightning-tab>
+
+                <!-- ========================================== -->
+                <!-- TAB 2: QUERY BUILDER (Interactive Tool)     -->
+                <!-- ========================================== -->
+                <lightning-tab label="Query Builder" icon-name="utility:builder">
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                        
+                        <!-- Step 1: Object Selection Combobox -->
+                        <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+                            <lightning-combobox 
+                                label="1. Select Object" 
+                                options={objectOptions} 
+                                value={selectedObject} 
+                                onchange={handleObjectChange}
+                                placeholder="Search and select an object..."
+                                searchable>
+                            </lightning-combobox>
+                        </div>
+
+                        <!-- Step 2: Field Selection Dual Listbox -->
+                        <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+                            <lightning-dual-listbox 
+                                label="2. Select Fields" 
+                                source-label="Available Fields" 
+                                selected-label="Selected Fields" 
+                                options={fieldOptions} 
+                                value={selectedFields} 
+                                onchange={handleFieldChange}
+                                disabled={isFieldSelectionDisabled}>
+                            </lightning-dual-listbox>
+                        </div>
+
+                        <!-- Step 3: WHERE Clause Input Text Box -->
+                        <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+                            <lightning-input 
+                                type="text" 
+                                label="3. WHERE Clause (Condition)" 
+                                placeholder="e.g. Industry = 'Technology' AND AnnualRevenue > 100000" 
+                                value={whereClause} 
+                                onchange={handleWhereChange}
+                                disabled={isFieldSelectionDisabled}>
+                            </lightning-input>
+                        </div>
+
+                        <!-- Step 4a: ORDER BY Field Selection -->
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-combobox 
+                                label="4. ORDER BY (Field)" 
+                                options={orderByOptions} 
+                                value={orderByField} 
+                                onchange={handleOrderByChange}
+                                disabled={isOrderByDisabled}
+                                placeholder="Select a field to sort by...">
+                            </lightning-combobox>
+                        </div>
+                        
+                        <!-- Step 4b: Sort Direction (ASC/DESC) -->
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-combobox 
+                                label="Sort Direction" 
+                                options={directionOptions} 
+                                value={orderDirection} 
+                                onchange={handleDirectionChange}
+                                disabled={isOrderByDisabled}>
+                            </lightning-combobox>
+                        </div>
+
+                        <!-- Step 5: LIMIT Rows Input Box -->
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-input 
+                                type="number" 
+                                label="5. LIMIT (Rows)" 
+                                value={limitRows} 
+                                onchange={handleLimitChange}
+                                min="1"
+                                disabled={isFieldSelectionDisabled}>
+                            </lightning-input>
+                        </div>
+                    </div>
+
+                    <!-- Live Generated SOQL Query Output Display Box -->
+                    <div class="slds-box slds-theme_shade slds-theme_alert-texture slds-m-top_large border-brand">
+                        <div class="slds-text-title_caps slds-m-bottom_x-small slds-text-color_weak">Generated SOQL Query</div>
+                        <pre class="slds-text-heading_small slds-text-color_default" style="white-space: pre-wrap; font-family: monospace;">{generatedQuery}</pre>
+                    </div>
+                </lightning-tab>
+
+                <lightning-tab label="LWC HTML Component" icon-name="utility:connected_apps">
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                        <lightning-input></lightning-input>
+                    </div>
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                        1. Data Entry & Formslightning-input – Accepts user input based on the specified type (text, date, number, checkbox, etc.).  lightning-combobox – Displays a dropdown list for single selection.  lightning-dual-listbox – Provides two lists to move items back and forth (available options vs. chosen options).  lightning-checkbox-group – Group of checkboxes for single or multiple selections.  lightning-radio-group – Group of radio buttons for selecting a single option.lightning-textarea – Multi-line text input control.lightning-slider – Slider component for selecting a numerical value in a range.lightning-rich-text – Rich text editor with formatting tools.2. Data Display & Tableslightning-datatable – Advanced table to display rows and columns of data with sorting, cell editing, and pagination.  lightning-card – A styled container box with a header, body, and footer.lightning-badge – A small label used to display status or counts.  lightning-pill – Represents a compact item such as a tag or filtered keyword.lightning-tree / lightning-tree-grid – Displays hierarchical or tree-structured data.  lightning-formatted-text / lightning-formatted-number – Used for safely rendering formatted data types.3. Navigation & Actionslightning-button – Standard clickable button.lightning-button-icon – Icon-only button.lightning-button-group – Groups multiple buttons together.lightning-button-menu – Dropdown menu triggered by a button.lightning-breadcrumbs – Navigation links showing page hierarchy.lightning-vertical-navigation – Vertical menu list for app navigation.4. Feedback & Indicatorslightning-spinner – Animated loading indicator.lightning-progress-bar – Linear progress indicator bar.  lightning-progress-indicator – Step-by-step progress tracker.  lightning-helptext – Tooltip icon providing supplemental hover text.lightning-banner / lightning-alert – Persistent notification banners.Would you like code examples or attribute details for any specific component listed above?
+                    </div>
+                </lightning-tab>
+                
+            </lightning-tabset>
+        </div>
+    </lightning-card>
+</template>

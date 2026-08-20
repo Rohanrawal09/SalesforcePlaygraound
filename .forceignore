@@ -1,2 +1,4 @@
 **/jsconfig.json
 **/.eslintrc.json
+# Ignore LWC Jest test folders
+**/__tests__/**

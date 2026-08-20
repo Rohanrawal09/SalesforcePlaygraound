@@ -1,7 +1,7 @@
 {
-  "orgName": "rohan company",
+  "orgName": "My Scratch Org",
   "edition": "Developer",
-  "features": ["DebugApex"],
+  "features": ["EnableSetPasswordInApi", "DebugApex"],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true
